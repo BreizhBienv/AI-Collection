@@ -87,6 +87,9 @@ public class Furnace : MonoBehaviour
                 _progressBarRoot.gameObject.SetActive(false);
             }
 
+            World.Instance.SetWorldState(EWorldState.AVAILABLE_FURNACE, true);
+            World.Instance.SetWorldState(EWorldState.AVAILABLE_INGOT, true);
+
             yield return null;
         }
     }
@@ -109,6 +112,4 @@ public class Furnace : MonoBehaviour
         }
         return false;
     }
-
-
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class World : MonoBehaviour
@@ -8,26 +10,49 @@ public class World : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        _worldState = new Dictionary<EWorldState, bool>()
+        {
+            { EWorldState.AVAILABLE_CHUNK,      false },
+            { EWorldState.AVAILABLE_FURNACE,    false },
+            { EWorldState.AVAILABLE_INGOT,      false },
+            { EWorldState.NEAR_CHUNK,           false },
+            { EWorldState.NEAR_FURNACE,         false },
+            { EWorldState.NEAR_CHEST,           false },
+            { EWorldState.GOAL_INGOT_DELIVERED, false },
+        };
     }
 
     public List<OreChunk> _oreChunks { get; private set; } = new List<OreChunk>();
     public List<Furnace> _furnaces { get; private set; } = new List<Furnace>();
     public List<Chest> _chests { get; private set; } = new List<Chest>();
 
+    [NonSerialized] public Dictionary<EWorldState, bool> _worldState;
+
+    public void SetWorldState(EWorldState pState, bool pValue)
+    {
+        _worldState[pState] = pValue;
+    }
+
+    public bool GetWorldState(EWorldState pState)
+    {
+        return _worldState[pState];
+    }
+
     public void RegisterOre(OreChunk ore)
     {
         if (!_oreChunks.Contains(ore))
         {
             _oreChunks.Add(ore);
+
+            SetWorldState(EWorldState.AVAILABLE_CHUNK, true);
         }
     }
 
     public void UnregisterOre(OreChunk ore)
     {
         if (_oreChunks.Contains(ore))
-        {
             _oreChunks.Remove(ore);
-        }
     }
 
     public void RegisterFurnace(Furnace furnace)
@@ -62,25 +87,18 @@ public class World : MonoBehaviour
         }
     }
 
+    public List<OreChunk> GetAvailableOreChunks()
+    {
+        return _oreChunks.Where(chunk => !chunk.IsOccupied()).ToList();
+    }
+
     public List<Furnace> GetAvailableFurnaces(int oreAmount)
     {
-        List<Furnace> availableFurnaces = new List<Furnace>();
-        foreach (Furnace furnace in _furnaces)
-        {
-            if (furnace.CanCraft(oreAmount))
-                availableFurnaces.Add(furnace);
-        }
-        return availableFurnaces;
+        return _furnaces.Where(furnace => furnace.CanCraft(oreAmount)).ToList();
     }
 
     public List<Furnace> GetFurnacesWithIron()
     {
-        List<Furnace> availableFurnaces = new List<Furnace>();
-        foreach (Furnace furnace in _furnaces)
-        {
-            if (furnace.CanPickUp())
-                availableFurnaces.Add(furnace);
-        }
-        return availableFurnaces;
+        return _furnaces.Where(furnace => furnace.CanPickUp()).ToList();
     }
 }

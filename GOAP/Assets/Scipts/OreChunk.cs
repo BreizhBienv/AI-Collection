@@ -7,7 +7,7 @@ public class OreChunk : MonoBehaviour
     [SerializeField] private int _amount;
     public int Amount { get { return _amount; } }
 
-    private int _reserved = 0;
+    private bool _isOccupied = true;
 
     private void Start()
     {
@@ -19,36 +19,28 @@ public class OreChunk : MonoBehaviour
         World.Instance.UnregisterOre(this);
     }
 
-
-    public bool HasOreAvailable()
+    public bool IsOccupied()
     {
-        return _amount > 0;
+        return _isOccupied;
     }
 
-    public bool ReserveOre(int amount = 1)
+    public void ReserveChunk(bool _isReserved)
     {
-        if (_reserved >= amount)
-            return true;
-
-        if (HasOreAvailable())
-        {
-            _reserved += amount;
-            _amount -= amount;
-            return true;
-        }
-        return false;
+        _isOccupied = _isReserved;
     }
 
-    public bool PickUpOre(int amount = 1)
+    public int PickUpOre(int amount = 1)
     {
-        if (amount > _reserved)
-            return false;
+        int numOreToPick = amount;
 
-        _reserved -= amount;
+        if (amount > _amount)
+            numOreToPick = _amount;
 
-        if (_amount == 0 && _reserved == 0)
+        _amount -= amount;
+
+        if (_amount <= 0)
             Destroy(gameObject);
 
-        return true;
+        return numOreToPick;
     }
 }
