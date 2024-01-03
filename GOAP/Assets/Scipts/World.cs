@@ -3,70 +3,69 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    private static World instance;
-    public static World Instance { get { return instance; } }
+    public static World Instance { get; private set; }
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
-    public List<OreChunk> OreChunks { get; private set; } = new List<OreChunk>();
-    public List<Furnace> Furnaces { get; private set; } = new List<Furnace>();
-    public List<Chest> Chests { get; private set; } = new List<Chest>();
+    public List<OreChunk> _oreChunks { get; private set; } = new List<OreChunk>();
+    public List<Furnace> _furnaces { get; private set; } = new List<Furnace>();
+    public List<Chest> _chests { get; private set; } = new List<Chest>();
 
     public void RegisterOre(OreChunk ore)
     {
-        if (!OreChunks.Contains(ore))
+        if (!_oreChunks.Contains(ore))
         {
-            OreChunks.Add(ore);
+            _oreChunks.Add(ore);
         }
     }
 
     public void UnregisterOre(OreChunk ore)
     {
-        if (OreChunks.Contains(ore))
+        if (_oreChunks.Contains(ore))
         {
-            OreChunks.Remove(ore);
+            _oreChunks.Remove(ore);
         }
     }
 
     public void RegisterFurnace(Furnace furnace)
     {
-        if (!Furnaces.Contains(furnace))
+        if (!_furnaces.Contains(furnace))
         {
-            Furnaces.Add(furnace);
+            _furnaces.Add(furnace);
         }
     }
 
     public void UnregisterFurnace(Furnace furnace)
     {
-        if (Furnaces.Contains(furnace))
+        if (_furnaces.Contains(furnace))
         {
-            Furnaces.Remove(furnace);
+            _furnaces.Remove(furnace);
         }
     }
 
     public void RegisterChest(Chest chest)
     {
-        if (!Chests.Contains(chest))
+        if (!_chests.Contains(chest))
         {
-            Chests.Add(chest);
+            _chests.Add(chest);
         }
     }
 
     public void UnregisterChest(Chest chest)
     {
-        if (Chests.Contains(chest))
+        if (_chests.Contains(chest))
         {
-            Chests.Remove(chest);
+            _chests.Remove(chest);
         }
     }
 
     public List<Furnace> GetAvailableFurnaces(int oreAmount)
     {
         List<Furnace> availableFurnaces = new List<Furnace>();
-        foreach (Furnace furnace in Furnaces)
+        foreach (Furnace furnace in _furnaces)
         {
             if (furnace.CanCraft(oreAmount))
                 availableFurnaces.Add(furnace);
@@ -77,7 +76,7 @@ public class World : MonoBehaviour
     public List<Furnace> GetFurnacesWithIron()
     {
         List<Furnace> availableFurnaces = new List<Furnace>();
-        foreach (Furnace furnace in Furnaces)
+        foreach (Furnace furnace in _furnaces)
         {
             if (furnace.CanPickUp())
                 availableFurnaces.Add(furnace);

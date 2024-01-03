@@ -6,8 +6,7 @@ using System.Linq;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Agent : MonoBehaviour
 {
-    protected NavMeshAgent _navMeshAgent;
-    public NavMeshAgent NavMeshAgent { get { return _navMeshAgent; } }
+    public NavMeshAgent _navMeshAgent { get; private set; }
 
     private GameObject _currentTarget = null;
 

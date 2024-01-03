@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
+    public int _ingotAmount;
+    public int _maxIngotAmount;
+
     private void Start()
     {
         World.Instance.RegisterChest(this);
