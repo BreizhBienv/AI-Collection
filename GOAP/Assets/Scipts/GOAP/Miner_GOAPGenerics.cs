@@ -9,5 +9,5 @@ public enum EWorldState : uint
     NEAR_CHEST,
     HAS_ORES,
     HAS_INGOTS,
-    GOAL_INGOT_DELIVERED,
+    INGOT_DELIVERED,
 }

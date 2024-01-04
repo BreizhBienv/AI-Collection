@@ -12,6 +12,18 @@ public class Miner_GOAP
             if (!action.IsValid(pParent._worldState))
                 continue;
 
+            //string debug = "";
+            //foreach (var state in pParent._worldState)
+            //    debug += (state.Value.ToString() + " ");
+
+            //string debugBis = "";
+            //foreach (var a in pAvailableActions)
+            //    debugBis += (a.ToString() + " ");
+
+            //UnityEngine.Debug.Log(action.ToString());
+            //UnityEngine.Debug.Log(debug);
+            //UnityEngine.Debug.Log(debugBis);
+
             Dictionary<EWorldState, bool> newWS = action.ApplyEffect(pParent._worldState);
             Node node = new Node(pParent, newWS, action);
 

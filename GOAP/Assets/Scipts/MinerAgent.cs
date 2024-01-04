@@ -13,17 +13,30 @@ public class MinerAgent : MonoBehaviour
     [NonSerialized] public int _numOrePossesed;
 
     private Dictionary<EWorldState, bool> _goal;
+    private List<BaseAction> _actions;
 
     protected virtual void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _goal = new Dictionary<EWorldState, bool>
         {
-            //{ EWorldState.GOAL_INGOT_DELIVERED, true },
+            { EWorldState.INGOT_DELIVERED, true },
             //{ EWorldState.AVAILABLE_FURNACE,    false }
-            { EWorldState.NEAR_CHUNK, true }
         };
-        
+
+        _actions = new List<BaseAction>()
+        {
+            { new MoveToOre_Action(MoveToOreChunk) },
+            { new FurnaceToProcess_Action(MoveToFurnace) },
+            { new FurnaceToRetrieve_Action(MoveToFurnace) },
+            { new MoveToChest_Action(MoveToChest) },
+
+            { new MineOre_Action(MineOreChunk) },
+            { new ProcessOre_Action(ProcessOre) },
+
+            { new RetrieveIngot_Action(RetrieveIngot) },
+            { new DeliverIngot_Action(DeliverIngot) },
+        };
     }
 
     protected void Start()
@@ -42,13 +55,8 @@ public class MinerAgent : MonoBehaviour
 
         List<Node> leaves = new List<Node>();
         Node root = new Node(new(World.Instance._worldState));
-        List<BaseAction> actions = new List<BaseAction>()
-        {
-            { new MoveToOre_Action() },
-            { new MineOre_Action() },
-        };
 
-        Miner_GOAP.BuildGraph(root, leaves, actions, _goal);
+        Miner_GOAP.BuildGraph(root, leaves, _actions, _goal);
 
         if (leaves.Count <= 0)
             yield break;
@@ -61,6 +69,43 @@ public class MinerAgent : MonoBehaviour
             action.Execute();
         }
     }
+
+    #region Actions
+    private void MoveToOreChunk()
+    {
+        Debug.Log("Moved To Ore");
+    }
+
+    private void MoveToFurnace()
+    {
+        Debug.Log("Moved To Furnace");
+    }
+
+    private void MoveToChest()
+    {
+        Debug.Log("Moved To Chest");
+    }
+
+    private void MineOreChunk()
+    {
+        Debug.Log("Mined Ore");
+    }
+
+    private void ProcessOre()
+    {
+        Debug.Log("Processed Ore");
+    }
+
+    private void RetrieveIngot()
+    {
+        Debug.Log("Ingot retrieved");
+    }
+
+    private void DeliverIngot()
+    {
+        Debug.Log("Delivered Ingot");
+    }
+    #endregion
 
     private void CompleteAction()
     {

@@ -19,7 +19,9 @@ public class World : MonoBehaviour
             { EWorldState.NEAR_CHUNK,           false },
             { EWorldState.NEAR_FURNACE,         false },
             { EWorldState.NEAR_CHEST,           false },
-            { EWorldState.GOAL_INGOT_DELIVERED, false },
+            { EWorldState.HAS_ORES,             false },
+            { EWorldState.HAS_INGOTS,           false },
+            { EWorldState.INGOT_DELIVERED,      false },
         };
     }
 
@@ -60,6 +62,7 @@ public class World : MonoBehaviour
         if (!_furnaces.Contains(furnace))
         {
             _furnaces.Add(furnace);
+            SetWorldState(EWorldState.AVAILABLE_FURNACE, true);
         }
     }
 

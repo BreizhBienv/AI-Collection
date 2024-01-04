@@ -23,6 +23,7 @@ public class Furnace : MonoBehaviour
     private void Start()
     {
         World.Instance.RegisterFurnace(this);
+
     }
 
     private void OnDestroy()

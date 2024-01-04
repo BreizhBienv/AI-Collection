@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public abstract class BaseAction
@@ -5,10 +6,12 @@ public abstract class BaseAction
     protected Dictionary<EWorldState, bool> _conditions;
 
     public int  _cost = 1;
+    protected Action _action;
 
-    public BaseAction()
+    public BaseAction(Action pAction)
     {
         _conditions = new Dictionary<EWorldState, bool>();
+        _action = pAction;
     }
 
     public bool IsValid(Dictionary<EWorldState, bool> pSimulated)
@@ -23,5 +26,9 @@ public abstract class BaseAction
         return true;
     }
     public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
-    public abstract void Execute();
+
+    public void Execute()
+    {
+        _action?.Invoke();
+    }
 }
