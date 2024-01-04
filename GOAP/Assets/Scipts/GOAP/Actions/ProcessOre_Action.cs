@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ProcessOre_Action : BaseAction
 {
@@ -18,5 +19,21 @@ public class ProcessOre_Action : BaseAction
         };
 
         return newWorldState;
+    }
+
+    public override void Execute(MinerAgent pAgent)
+    {
+        Debug.Log("Processed Ore");
+
+        Furnace furnace = pAgent._target.GetComponent<Furnace>();
+        if (furnace == null || !furnace.CanCraft(pAgent._orePossesed))
+            return;
+
+        pAgent._orePossesed = furnace.TryCraft(pAgent._orePossesed);
+    }
+
+    public override bool IsComplete(MinerAgent pAgent)
+    {
+        return true;
     }
 }

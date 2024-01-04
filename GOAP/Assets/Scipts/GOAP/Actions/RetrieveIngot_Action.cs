@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class RetrieveIngot_Action : BaseAction
 {
@@ -18,5 +19,22 @@ public class RetrieveIngot_Action : BaseAction
         };
 
         return newWS;
+    }
+
+    public override void Execute(MinerAgent pAgent)
+    {
+        Debug.Log("Ingot retrieved");
+
+        Furnace furnace = pAgent._target.GetComponent<Furnace>();
+        if (furnace == null)
+            return;
+
+        if (furnace.TryPickUp())
+            pAgent._ingotPossesed++;
+    }
+
+    public override bool IsComplete(MinerAgent pAgent)
+    {
+        return true;
     }
 }

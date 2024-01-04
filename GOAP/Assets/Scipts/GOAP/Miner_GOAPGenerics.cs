@@ -1,4 +1,9 @@
 
+public static class Utils
+{
+    public static float distanceToTarget = 5f;
+}
+
 public enum EWorldState : uint
 {
     AVAILABLE_CHUNK,
@@ -9,5 +14,5 @@ public enum EWorldState : uint
     NEAR_CHEST,
     HAS_ORES,
     HAS_INGOTS,
-    INGOT_DELIVERED,
+    STORE_INGOT,
 }

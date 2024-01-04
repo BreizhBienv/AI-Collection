@@ -16,12 +16,6 @@ public class World : MonoBehaviour
             { EWorldState.AVAILABLE_CHUNK,      false },
             { EWorldState.AVAILABLE_FURNACE,    false },
             { EWorldState.AVAILABLE_INGOT,      false },
-            { EWorldState.NEAR_CHUNK,           false },
-            { EWorldState.NEAR_FURNACE,         false },
-            { EWorldState.NEAR_CHEST,           false },
-            { EWorldState.HAS_ORES,             false },
-            { EWorldState.HAS_INGOTS,           false },
-            { EWorldState.INGOT_DELIVERED,      false },
         };
     }
 
@@ -103,5 +97,11 @@ public class World : MonoBehaviour
     public List<Furnace> GetFurnacesWithIron()
     {
         return _furnaces.Where(furnace => furnace.CanPickUp()).ToList();
+    }
+
+    public Chest GetRandomChest()
+    {
+        int randChest = UnityEngine.Random.Range(0, _chests.Count - 1);
+        return _chests[randChest];
     }
 }

@@ -25,10 +25,8 @@ public abstract class BaseAction
 
         return true;
     }
-    public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
 
-    public void Execute()
-    {
-        _action?.Invoke();
-    }
+    public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
+    public abstract void Execute(MinerAgent pAgent);
+    public abstract bool IsComplete(MinerAgent pAgent);
 }

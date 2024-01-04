@@ -31,25 +31,25 @@ public class Furnace : MonoBehaviour
         World.Instance.UnregisterFurnace(this);
     }
 
-    public bool CanCraft(int oreAmount = 2)
+    public bool CanCraft(int pOreAmount = 2)
     {
-        return oreAmount >= _oreCost && _craftQueue < _maxQueued;
+        return pOreAmount >= _oreCost && _craftQueue < _maxQueued;
     }
 
-    public int TryCraft(int oreAmount)
+    public int TryCraft(int pOreAmount)
     {
-        if (!CanCraft(oreAmount))
-            return oreAmount;
+        if (!CanCraft(pOreAmount))
+            return pOreAmount;
 
         if (_isCrafting)
         {
             _craftQueue++;
 
-            return oreAmount - _oreCost;
+            return pOreAmount - _oreCost;
         }
 
         StartCoroutine(Craft());
-        return oreAmount - _oreCost;
+        return pOreAmount - _oreCost;
     }
 
     IEnumerator Craft()

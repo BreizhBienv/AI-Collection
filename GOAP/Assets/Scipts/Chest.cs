@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
-    public int _ingotAmount;
-    public int _maxIngotAmount;
-
     private void Start()
     {
         World.Instance.RegisterChest(this);
@@ -17,7 +14,7 @@ public class Chest : MonoBehaviour
         World.Instance.UnregisterChest(this);
     }
 
-    public void DepositIron()
+    public void StoreIngot(int pAmount)
     {
     }
 }
