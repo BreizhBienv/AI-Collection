@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 public abstract class BaseAction
 {
@@ -7,6 +8,7 @@ public abstract class BaseAction
 
     public int  _cost = 1;
     protected Action _action;
+    public bool _hasStarted = false;
 
     public BaseAction(Action pAction)
     {
@@ -27,6 +29,19 @@ public abstract class BaseAction
     }
 
     public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
+
+
+    public virtual void StartAction(MinerAgent pAgent)
+    {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+    }
     public abstract void Execute(MinerAgent pAgent);
     public abstract bool IsComplete(MinerAgent pAgent);
+    public virtual void OnFinished(MinerAgent pAgent)
+    {
+
+    }
 }

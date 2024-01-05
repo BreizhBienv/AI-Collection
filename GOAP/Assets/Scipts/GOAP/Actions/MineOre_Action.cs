@@ -29,12 +29,30 @@ public class MineOre_Action : BaseAction
         if (chunk == null)
             return;
 
-        chunk.ReserveChunk(true);
         pAgent._orePossesed += chunk.PickUpOre();
     }
 
     public override bool IsComplete(MinerAgent pAgent)
     {
         return true;
+    }
+
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+
+        pAgent._target?.GetComponent<OreChunk>()?.ReserveChunk(pAgent);
+    }
+
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        base.OnFinished(pAgent);
+
+        if (pAgent._orePossesed >= Utils.oreNeededToCraft)
+        {
+            pAgent._target.GetComponent<OreChunk>()?.ReserveChunk(null);
+            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
+        }
     }
 }

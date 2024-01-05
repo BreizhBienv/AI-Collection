@@ -14,20 +14,22 @@ public class MinerAgent : MonoBehaviour
     [NonSerialized] public int _orePossesed;
     [NonSerialized] public int _ingotPossesed;
 
-    private Dictionary<EWorldState, bool> _perceivedWorldState;
+    public Dictionary<EWorldState, bool> _perceivedWorldState;
 
     private Dictionary<EWorldState, bool> _goal;
-    private List<BaseAction> _actions;
+    private List<BaseAction> _craftIngotActions;
+    private List<BaseAction> _storeIngotActions;
 
     [NonSerialized] public GameObject _target = null;
 
     protected virtual void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.stoppingDistance = Utils.stoppingDistance;
+
         _goal = new Dictionary<EWorldState, bool>
         {
             { EWorldState.STORE_INGOT, true },
-            //{ EWorldState.AVAILABLE_FURNACE,    false }
         };
 
         _perceivedWorldState = new Dictionary<EWorldState, bool>()
@@ -37,18 +39,26 @@ public class MinerAgent : MonoBehaviour
             { EWorldState.NEAR_CHEST,   false },
             { EWorldState.HAS_ORES,     false },
             { EWorldState.HAS_INGOTS,   false },
+            { EWorldState.PROCESS_ORE,  false },
             { EWorldState.STORE_INGOT,  false },
         };
 
-        _actions = new List<BaseAction>()
+        _craftIngotActions = new List<BaseAction>()
         {
             { new MoveToOre_Action(MoveToOreChunk) },
             { new FurnaceToProcess_Action(MoveToFurnace) },
-            { new FurnaceToRetrieve_Action(MoveToFurnace) },
-            { new MoveToChest_Action(MoveToChest) },
 
             { new MineOre_Action(MineOreChunk) },
             { new ProcessOre_Action(ProcessOre) },
+
+            { new RetrieveIngot_Action(RetrieveIngot) },
+            { new StoreIngot_Action(StoreIngot) },
+        };
+
+        _storeIngotActions = new List<BaseAction>()
+        {
+            { new FurnaceToRetrieve_Action(MoveToFurnace) },
+            { new MoveToChest_Action(MoveToChest) },
 
             { new RetrieveIngot_Action(RetrieveIngot) },
             { new StoreIngot_Action(StoreIngot) },
@@ -60,14 +70,9 @@ public class MinerAgent : MonoBehaviour
         StartCoroutine(BuildGraph());
     }
 
-    protected virtual void Update()
-    {
-
-    }
-
     private IEnumerator BuildGraph()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return 0;
 
         Dictionary<EWorldState, bool> mergedWorldState = new(World.Instance._worldState);
         _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
@@ -75,7 +80,9 @@ public class MinerAgent : MonoBehaviour
         Node root = new Node(mergedWorldState);
         List<Node> leaves = new List<Node>();
 
-        Miner_GOAP.BuildGraph(root, leaves, _actions, _goal);
+        GetBestPlan(out var goal, out var actions);
+
+        Miner_GOAP.BuildGraph(root, ref leaves, actions, goal);
 
         if (leaves.Count <= 0)
             yield break;
@@ -86,35 +93,74 @@ public class MinerAgent : MonoBehaviour
         StartCoroutine(ExecutePlan(leaves[0]._actions));
     }
 
+    private void GetBestPlan(out Dictionary<EWorldState, bool> oGoal, out List<BaseAction> oActions)
+    {
+        bool ingotAvailable = World.Instance._worldState[EWorldState.AVAILABLE_INGOT];
+        bool furnaceAvailable = World.Instance._worldState[EWorldState.AVAILABLE_FURNACE];
+
+        oGoal = null;
+        oActions = null;
+
+        if (ingotAvailable)
+        {
+            oActions = _storeIngotActions;
+            oGoal = new Dictionary<EWorldState, bool>()
+            {
+                { EWorldState.STORE_INGOT, true },
+            };
+        }
+        else if (furnaceAvailable)
+        {
+            oActions = _craftIngotActions;
+            oGoal = new Dictionary<EWorldState, bool>()
+            {
+                { EWorldState.PROCESS_ORE, true },
+            };
+        }
+    }
+
     private IEnumerator ExecutePlan(List<BaseAction> pPlan)
     {
         while (pPlan.Count > 0)
         {
             BaseAction action = pPlan[0];
-            
-            if (!action.IsValid(new()))
+
+            Dictionary<EWorldState, bool> mergedWorldState = new(World.Instance._worldState);
+            _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
+            if (!action.IsValid(mergedWorldState))
             {
                 Abort();
                 yield break;
             }
 
+            action.StartAction(this);
             action.Execute(this);
 
-            if (!action.IsComplete(this))
-                continue;
 
+            if (!action.IsComplete(this))
+            {
+                yield return 0;
+                continue;
+            }
+
+            action.OnFinished(this);
             pPlan.RemoveAt(0);
-        }   
+        }
+
+        StartCoroutine(BuildGraph());
     }
 
     private void Abort()
     {
-
+        StartCoroutine(BuildGraph());
     }
 
     public bool CloseEnoughToTarget()
     {
-        return _navMeshAgent.remainingDistance <= Utils.distanceToTarget;
+        if (_navMeshAgent.pathPending)
+            return false;
+
+        return _navMeshAgent.remainingDistance <= Utils.stoppingDistance;
     }
 
     #region Actions

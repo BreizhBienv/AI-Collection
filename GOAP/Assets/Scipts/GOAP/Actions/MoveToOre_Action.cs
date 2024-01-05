@@ -25,24 +25,22 @@ public class MoveToOre_Action : BaseAction
 
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Moved To Ore");
+        List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
+        int rand = UnityEngine.Random.Range(0, chunks.Count - 1);
 
         if (pAgent._target == null)
         {
-            List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
-            int rand = UnityEngine.Random.Range(0, chunks.Count - 1);
             pAgent._target = chunks[rand].gameObject;
+            Debug.Log("Moving To " + pAgent._target.name);
         }
         else
         {
             OreChunk chunk = pAgent._target.GetComponent<OreChunk>();
-            if (!chunk.IsOccupied())
+            if (!chunk.IsOccupiedBy(pAgent))
                 return;
 
-            List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
-            int rand = UnityEngine.Random.Range(0, chunks.Count - 1);
+            Debug.Log("Moving To " + pAgent._target.name);
             pAgent._target = chunks[rand].gameObject;
-
         }
 
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
@@ -50,6 +48,27 @@ public class MoveToOre_Action : BaseAction
 
     public override bool IsComplete(MinerAgent pAgent)
     {
-        return pAgent.CloseEnoughToTarget();
+        if (pAgent.CloseEnoughToTarget())
+        {
+            Debug.Log("Reached " + pAgent._target.name);
+            return true;
+        }
+
+        return false;
     }
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+    }
+
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        base.OnFinished(pAgent);
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = true;
+    }
+
 }

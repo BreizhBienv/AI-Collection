@@ -3,7 +3,7 @@ using System.Collections.Generic;
 public class Miner_GOAP
 {
     static public void BuildGraph(Node pParent,
-        List<Node> pLeaves, 
+        ref List<Node> pLeaves, 
         List<BaseAction> pAvailableActions,
         Dictionary<EWorldState, bool> goal)
     {
@@ -34,7 +34,7 @@ public class Miner_GOAP
                 remainingActions.Remove(action);
 
                 //recursive call on new node
-                BuildGraph(node, pLeaves, remainingActions, goal);
+                BuildGraph(node, ref pLeaves, remainingActions, goal);
             }
             else
                 pLeaves.Add(node);

@@ -15,7 +15,7 @@ public class ProcessOre_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWorldState = new(pSimulated)
         {
-            [EWorldState.AVAILABLE_INGOT] = true,
+            [EWorldState.PROCESS_ORE] = true,
         };
 
         return newWorldState;
@@ -35,5 +35,21 @@ public class ProcessOre_Action : BaseAction
     public override bool IsComplete(MinerAgent pAgent)
     {
         return true;
+    }
+
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+    }
+
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        base.OnFinished(pAgent);
+
+        if (pAgent._orePossesed < 2)
+        {
+            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.HAS_ORES] = false;
+        }
     }
 }

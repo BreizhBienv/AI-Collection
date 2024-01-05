@@ -21,30 +21,32 @@ public class MoveToFurnace_Action : BaseAction
 
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Moved To Furnace");
-
-        if (pAgent._target == null)
-        {
-            List<Furnace> furnaces = World.Instance.GetAvailableFurnaces(pAgent._orePossesed);
-            int rand = UnityEngine.Random.Range(0, furnaces.Count - 1);
-            pAgent._target = furnaces[rand].gameObject;
-        }
-        else
-        {
-            Furnace furnace = pAgent._target.GetComponent<Furnace>();
-            if (furnace.CanCraft(pAgent._orePossesed))
-                return;
-
-            List<Furnace> furnaces = World.Instance.GetAvailableFurnaces(pAgent._orePossesed);
-            int rand = UnityEngine.Random.Range(0, furnaces.Count - 1);
-            pAgent._target = furnaces[rand].gameObject;
-        }
-
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
 
     public override bool IsComplete(MinerAgent pAgent)
     {
-        return pAgent.CloseEnoughToTarget();
+        if (pAgent.CloseEnoughToTarget())
+        {
+            Debug.Log("Moved To Furnace");
+            return true;
+        }
+
+        return false;
+    }
+
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
+    }
+
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        base.OnFinished(pAgent);
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = true;
     }
 }

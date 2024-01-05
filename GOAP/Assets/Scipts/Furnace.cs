@@ -23,7 +23,7 @@ public class Furnace : MonoBehaviour
     private void Start()
     {
         World.Instance.RegisterFurnace(this);
-
+        _oreCost = Utils.oreNeededToCraft;
     }
 
     private void OnDestroy()

@@ -37,4 +37,20 @@ public class StoreIngot_Action : BaseAction
     {
         return true;
     }
+
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+    }
+
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        base.OnFinished(pAgent);
+
+        if (pAgent._ingotPossesed > 0)
+            return;
+
+        pAgent._target = null;
+        pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = false;
+    }
 }

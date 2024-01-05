@@ -13,8 +13,8 @@ public class World : MonoBehaviour
 
         _worldState = new Dictionary<EWorldState, bool>()
         {
-            { EWorldState.AVAILABLE_CHUNK,      false },
-            { EWorldState.AVAILABLE_FURNACE,    false },
+            { EWorldState.AVAILABLE_CHUNK,      true },
+            { EWorldState.AVAILABLE_FURNACE,    true },
             { EWorldState.AVAILABLE_INGOT,      false },
         };
     }
@@ -38,11 +38,7 @@ public class World : MonoBehaviour
     public void RegisterOre(OreChunk ore)
     {
         if (!_oreChunks.Contains(ore))
-        {
             _oreChunks.Add(ore);
-
-            SetWorldState(EWorldState.AVAILABLE_CHUNK, true);
-        }
     }
 
     public void UnregisterOre(OreChunk ore)
@@ -54,34 +50,25 @@ public class World : MonoBehaviour
     public void RegisterFurnace(Furnace furnace)
     {
         if (!_furnaces.Contains(furnace))
-        {
             _furnaces.Add(furnace);
-            SetWorldState(EWorldState.AVAILABLE_FURNACE, true);
-        }
     }
 
     public void UnregisterFurnace(Furnace furnace)
     {
         if (_furnaces.Contains(furnace))
-        {
             _furnaces.Remove(furnace);
-        }
     }
 
     public void RegisterChest(Chest chest)
     {
         if (!_chests.Contains(chest))
-        {
             _chests.Add(chest);
-        }
     }
 
     public void UnregisterChest(Chest chest)
     {
         if (_chests.Contains(chest))
-        {
             _chests.Remove(chest);
-        }
     }
 
     public List<OreChunk> GetAvailableOreChunks()

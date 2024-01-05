@@ -23,24 +23,40 @@ public class MoveToChest_Action : BaseAction
 
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Moving To Chest");
-
         if (pAgent._target == null)
+        {
+            Debug.Log("Moving To Chest");
             pAgent._target = World.Instance.GetRandomChest().gameObject;
+        }
         else
         {
             Chest chest = pAgent._target.GetComponent<Chest>();
             if (chest != null)
                 return;
 
+            Debug.Log("Moving To Chest");
             pAgent._target = World.Instance.GetRandomChest().gameObject;
         }
 
-        pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position); 
+        pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
 
     public override bool IsComplete(MinerAgent pAgent)
     {
-        return pAgent.CloseEnoughToTarget();
+        if (pAgent.CloseEnoughToTarget())
+        {
+            Debug.Log("Moved To Chest");
+            return true;
+        }
+
+        return false;
+    }
+
+    public override void StartAction(MinerAgent pAgent)
+    {
+        base.StartAction(pAgent);
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
     }
 }

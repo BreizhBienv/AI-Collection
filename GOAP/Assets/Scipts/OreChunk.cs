@@ -7,7 +7,7 @@ public class OreChunk : MonoBehaviour
     [SerializeField] private int _amount;
     public int Amount { get { return _amount; } }
 
-    private bool _isOccupied = false;
+    private MinerAgent _occupiedBy = null;
 
     private void Start()
     {
@@ -19,14 +19,19 @@ public class OreChunk : MonoBehaviour
         World.Instance.UnregisterOre(this);
     }
 
-    public bool IsOccupied()
+    public bool IsOccupiedBy(MinerAgent pAgent)
     {
-        return _isOccupied;
+        return pAgent == _occupiedBy;
     }
 
-    public void ReserveChunk(bool pIsReserved)
+    public bool IsOccupied()
     {
-        _isOccupied = pIsReserved;
+        return _occupiedBy != null;
+    }
+
+    public void ReserveChunk(MinerAgent pReservedBy)
+    {
+        _occupiedBy = pReservedBy;
     }
 
     public int PickUpOre(int pAmount = 1)
