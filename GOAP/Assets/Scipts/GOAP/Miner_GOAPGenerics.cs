@@ -19,10 +19,5 @@ public enum EWorldState : uint
     HAS_INGOTS,
     PROCESS_ORE,
     STORE_INGOT,
-}
-
-public enum EGoal : uint
-{
-    PROCESS_ORE,
-    STORE_INGOT,
+    DO_NOTHING,
 }

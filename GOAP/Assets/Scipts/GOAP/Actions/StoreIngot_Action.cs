@@ -21,10 +21,25 @@ public class StoreIngot_Action : BaseAction
         return newWS;
     }
 
+    public override void StartAction(MinerAgent pAgent)
+    {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+
+        Chest chest = pAgent._target?.GetComponent<Chest>();
+        if (chest == null)
+        {
+            pAgent._target = null;
+            return;
+        }
+
+        Debug.Log("Storing Ingot");
+    }
+
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Delivered Ingot");
-
         Chest chest = pAgent._target.GetComponent<Chest>();
         if (chest == null)
             return;
@@ -38,15 +53,9 @@ public class StoreIngot_Action : BaseAction
         return true;
     }
 
-    public override void StartAction(MinerAgent pAgent)
-    {
-        base.StartAction(pAgent);
-    }
 
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
-
         if (pAgent._ingotPossesed > 0)
             return;
 

@@ -23,51 +23,50 @@ public class MoveToOre_Action : BaseAction
         return newWS;
     }
 
-    public override void Execute(MinerAgent pAgent)
+    public override void StartAction(MinerAgent pAgent)
     {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+
         List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
+
+        if (chunks.Count <= 0)
+            return;
+
         int rand = UnityEngine.Random.Range(0, chunks.Count - 1);
 
-        if (pAgent._target == null)
-        {
-            pAgent._target = chunks[rand].gameObject;
-            Debug.Log("Moving To " + pAgent._target.name);
-        }
-        else
-        {
-            OreChunk chunk = pAgent._target.GetComponent<OreChunk>();
-            if (!chunk.IsOccupiedBy(pAgent))
-                return;
-
-            Debug.Log("Moving To " + pAgent._target.name);
-            pAgent._target = chunks[rand].gameObject;
-        }
+        pAgent._target = chunks[rand].gameObject;
+        Debug.Log("Moving To " + pAgent._target.name);
 
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
 
+    public override void Execute(MinerAgent pAgent)
+    {
+        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
+        if (chunk != null && !chunk.IsOccupied())
+            return;
+
+        pAgent._target = null;
+        pAgent._navMeshAgent.isStopped = true;
+    }
+
     public override bool IsComplete(MinerAgent pAgent)
     {
-        if (pAgent.CloseEnoughToTarget())
-        {
-            Debug.Log("Reached " + pAgent._target.name);
-            return true;
-        }
+        if (pAgent._target == null || !pAgent.CloseEnoughToTarget())
+            return false;
 
-        return false;
-    }
-    public override void StartAction(MinerAgent pAgent)
-    {
-        base.StartAction(pAgent);
-
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
-        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+        Debug.Log("Reached " + pAgent._target.name);
+        return true;
     }
 
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
-
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = true;
     }
 

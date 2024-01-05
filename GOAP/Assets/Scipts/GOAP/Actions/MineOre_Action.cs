@@ -21,10 +21,26 @@ public class MineOre_Action : BaseAction
         return newWorldState;
     }
 
+    public override void StartAction(MinerAgent pAgent)
+    {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+
+        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
+        if (chunk == null)
+        {
+            pAgent._target = null;
+            return;
+        }
+
+        Debug.Log("Mining Ore");
+        chunk.ReserveChunk(pAgent);
+    }
+
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Mined Ore");
-
         OreChunk chunk = pAgent._target.GetComponent<OreChunk>();
         if (chunk == null)
             return;
@@ -37,20 +53,18 @@ public class MineOre_Action : BaseAction
         return true;
     }
 
-    public override void StartAction(MinerAgent pAgent)
-    {
-        base.StartAction(pAgent);
-
-        pAgent._target?.GetComponent<OreChunk>()?.ReserveChunk(pAgent);
-    }
-
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
+        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
+        if (chunk == null || chunk.Amount <= 0)
+        {
+            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
+        }
 
         if (pAgent._orePossesed >= Utils.oreNeededToCraft)
         {
-            pAgent._target.GetComponent<OreChunk>()?.ReserveChunk(null);
+            chunk?.ReserveChunk(null);
             pAgent._target = null;
             pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
         }

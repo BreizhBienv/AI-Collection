@@ -21,42 +21,47 @@ public class MoveToChest_Action : BaseAction
         return newWS;
     }
 
-    public override void Execute(MinerAgent pAgent)
+    public override void StartAction(MinerAgent pAgent)
     {
-        if (pAgent._target == null)
-        {
-            Debug.Log("Moving To Chest");
-            pAgent._target = World.Instance.GetRandomChest().gameObject;
-        }
-        else
-        {
-            Chest chest = pAgent._target.GetComponent<Chest>();
-            if (chest != null)
-                return;
+        if (_hasStarted)
+            return;
 
-            Debug.Log("Moving To Chest");
-            pAgent._target = World.Instance.GetRandomChest().gameObject;
-        }
+        _hasStarted = true;
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+
+        if (pAgent._target != null)
+            return;
+
+        Debug.Log("Moving To Chest");
+        pAgent._target = World.Instance.GetRandomChest().gameObject;
+
 
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override void Execute(MinerAgent pAgent)
     {
-        if (pAgent.CloseEnoughToTarget())
-        {
-            Debug.Log("Moved To Chest");
-            return true;
-        }
+        Chest chest = pAgent._target?.GetComponent<Chest>();
+        if (chest != null)
+            return;
 
-        return false;
+        pAgent._target = null;
+        pAgent._navMeshAgent.isStopped = true;
     }
 
-    public override void StartAction(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent)
     {
-        base.StartAction(pAgent);
+        if (pAgent._target == null || pAgent.CloseEnoughToTarget())
+            return false;
+        
+        Debug.Log("Moved To " + pAgent._target.name);
+        return true;
+    }
 
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
-        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+    public override void OnFinished(MinerAgent pAgent)
+    {
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = true;
     }
 }

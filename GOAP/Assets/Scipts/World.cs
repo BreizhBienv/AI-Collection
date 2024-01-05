@@ -45,6 +45,9 @@ public class World : MonoBehaviour
     {
         if (_oreChunks.Contains(ore))
             _oreChunks.Remove(ore);
+
+        if (_oreChunks.Count <= 0)
+            _worldState[EWorldState.AVAILABLE_CHUNK] = false;
     }
 
     public void RegisterFurnace(Furnace furnace)

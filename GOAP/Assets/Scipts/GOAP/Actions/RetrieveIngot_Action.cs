@@ -21,10 +21,26 @@ public class RetrieveIngot_Action : BaseAction
         return newWS;
     }
 
+    public override void StartAction(MinerAgent pAgent)
+    {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+
+        Furnace furnace = pAgent._target?.GetComponent<Furnace>();
+        if (furnace == null)
+        {
+            pAgent._target = null;
+            return;
+        }
+
+        Debug.Log("Retrieving Ingot");
+    }
+
+
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Ingot retrieved");
-
         Furnace furnace = pAgent._target.GetComponent<Furnace>();
         if (furnace == null)
             return;
@@ -38,19 +54,12 @@ public class RetrieveIngot_Action : BaseAction
         return true;
     }
 
-    public override void StartAction(MinerAgent pAgent)
-    {
-        base.StartAction(pAgent);
-    }
-
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
+        if (pAgent._ingotPossesed <= 0)
+            return;
 
-        if (pAgent._ingotPossesed > 0)
-        {
-            pAgent._target = null;
-            pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = true;
-        }
+        pAgent._target = null;
+        pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = true;
     }
 }

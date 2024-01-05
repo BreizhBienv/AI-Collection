@@ -10,6 +10,7 @@ public abstract class BaseAction
     protected Action _action;
     public bool _hasStarted = false;
 
+
     public BaseAction(Action pAction)
     {
         _conditions = new Dictionary<EWorldState, bool>();
@@ -31,17 +32,8 @@ public abstract class BaseAction
     public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
 
 
-    public virtual void StartAction(MinerAgent pAgent)
-    {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-    }
+    public abstract void StartAction(MinerAgent pAgent);
     public abstract void Execute(MinerAgent pAgent);
     public abstract bool IsComplete(MinerAgent pAgent);
-    public virtual void OnFinished(MinerAgent pAgent)
-    {
-
-    }
+    public abstract void OnFinished(MinerAgent pAgent);
 }

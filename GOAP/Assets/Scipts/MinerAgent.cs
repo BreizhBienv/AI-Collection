@@ -108,6 +108,8 @@ public class MinerAgent : MonoBehaviour
             {
                 { EWorldState.STORE_INGOT, true },
             };
+
+
         }
         else if (furnaceAvailable)
         {

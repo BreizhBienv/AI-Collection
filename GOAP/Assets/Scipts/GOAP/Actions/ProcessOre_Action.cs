@@ -21,11 +21,26 @@ public class ProcessOre_Action : BaseAction
         return newWorldState;
     }
 
+    public override void StartAction(MinerAgent pAgent)
+    {
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
+
+        Furnace furnace = pAgent._target?.GetComponent<Furnace>();
+        if (furnace == null)
+        {
+            pAgent._target = null;
+            return;
+        }
+
+        Debug.Log("Processing Ore");
+    }
+
     public override void Execute(MinerAgent pAgent)
     {
-        Debug.Log("Processed Ore");
-
-        Furnace furnace = pAgent._target.GetComponent<Furnace>();
+        Furnace furnace = pAgent._target?.GetComponent<Furnace>();
         if (furnace == null || !furnace.CanCraft(pAgent._orePossesed))
             return;
 
@@ -37,19 +52,12 @@ public class ProcessOre_Action : BaseAction
         return true;
     }
 
-    public override void StartAction(MinerAgent pAgent)
-    {
-        base.StartAction(pAgent);
-    }
-
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
+        if (pAgent._orePossesed % 2 <= 0)
+            return;
 
-        if (pAgent._orePossesed < 2)
-        {
-            pAgent._target = null;
-            pAgent._perceivedWorldState[EWorldState.HAS_ORES] = false;
-        }
+        pAgent._target = null;
+        pAgent._perceivedWorldState[EWorldState.HAS_ORES] = false;
     }
 }

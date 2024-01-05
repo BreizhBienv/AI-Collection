@@ -19,34 +19,32 @@ public class MoveToFurnace_Action : BaseAction
         return newWorldState;
     }
 
-    public override void Execute(MinerAgent pAgent)
-    {
-        pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
-    }
-
-    public override bool IsComplete(MinerAgent pAgent)
-    {
-        if (pAgent.CloseEnoughToTarget())
-        {
-            Debug.Log("Moved To Furnace");
-            return true;
-        }
-
-        return false;
-    }
-
     public override void StartAction(MinerAgent pAgent)
     {
-        base.StartAction(pAgent);
+        if (_hasStarted)
+            return;
+
+        _hasStarted = true;
 
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
     }
 
+    public override void Execute(MinerAgent pAgent)
+    {
+    }
+
+    public override bool IsComplete(MinerAgent pAgent)
+    {
+        if (pAgent._target == null || !pAgent.CloseEnoughToTarget())
+            return false;
+        
+        Debug.Log("Moved To Furnace");
+        return true;
+    }
+
     public override void OnFinished(MinerAgent pAgent)
     {
-        base.OnFinished(pAgent);
-
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = true;
     }
 }
