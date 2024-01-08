@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StoreIngot_Action : BaseAction
 {
-    public StoreIngot_Action(Action pAction) : base(pAction)
+    public StoreIngot_Action()
     {
         _conditions.Add(EWorldState.NEAR_CHEST,         true);
         _conditions.Add(EWorldState.HAS_INGOTS,         true);
@@ -23,11 +23,6 @@ public class StoreIngot_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         Chest chest = pAgent._target?.GetComponent<Chest>();
         if (chest == null)
         {

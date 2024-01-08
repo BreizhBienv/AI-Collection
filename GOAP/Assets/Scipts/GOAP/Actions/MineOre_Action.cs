@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MineOre_Action : BaseAction
 {
-    public MineOre_Action(Action pAction) : base(pAction)
+    public MineOre_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_CHUNK,    true);
         _conditions.Add(EWorldState.NEAR_CHUNK,         true);
@@ -23,11 +23,6 @@ public class MineOre_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
         if (chunk == null)
         {
@@ -35,7 +30,6 @@ public class MineOre_Action : BaseAction
             return;
         }
 
-        Debug.Log("Mining Ore");
         chunk.ReserveChunk(pAgent);
     }
 
@@ -45,6 +39,7 @@ public class MineOre_Action : BaseAction
         if (chunk == null)
             return;
 
+        Debug.Log("Mining Ore");
         pAgent._orePossesed += chunk.PickUpOre();
     }
 

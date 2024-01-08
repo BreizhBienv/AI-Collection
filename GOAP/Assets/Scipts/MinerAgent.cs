@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
+using System.Data;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class MinerAgent : MonoBehaviour
@@ -16,7 +17,6 @@ public class MinerAgent : MonoBehaviour
 
     public Dictionary<EWorldState, bool> _perceivedWorldState;
 
-    private Dictionary<EWorldState, bool> _goal;
     private List<BaseAction> _craftIngotActions;
     private List<BaseAction> _storeIngotActions;
 
@@ -26,11 +26,6 @@ public class MinerAgent : MonoBehaviour
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.stoppingDistance = Utils.stoppingDistance;
-
-        _goal = new Dictionary<EWorldState, bool>
-        {
-            { EWorldState.STORE_INGOT, true },
-        };
 
         _perceivedWorldState = new Dictionary<EWorldState, bool>()
         {
@@ -45,23 +40,20 @@ public class MinerAgent : MonoBehaviour
 
         _craftIngotActions = new List<BaseAction>()
         {
-            { new MoveToOre_Action(MoveToOreChunk) },
-            { new FurnaceToProcess_Action(MoveToFurnace) },
+            { new MoveToOre_Action() },
+            { new FurnaceToProcess_Action() },
 
-            { new MineOre_Action(MineOreChunk) },
-            { new ProcessOre_Action(ProcessOre) },
-
-            { new RetrieveIngot_Action(RetrieveIngot) },
-            { new StoreIngot_Action(StoreIngot) },
+            { new MineOre_Action() },
+            { new ProcessOre_Action() },
         };
 
         _storeIngotActions = new List<BaseAction>()
         {
-            { new FurnaceToRetrieve_Action(MoveToFurnace) },
-            { new MoveToChest_Action(MoveToChest) },
+            { new FurnaceToRetrieve_Action() },
+            { new MoveToChest_Action() },
 
-            { new RetrieveIngot_Action(RetrieveIngot) },
-            { new StoreIngot_Action(StoreIngot) },
+            { new RetrieveIngot_Action() },
+            { new StoreIngot_Action() },
         };
     }
 
@@ -72,7 +64,7 @@ public class MinerAgent : MonoBehaviour
 
     private IEnumerator BuildGraph()
     {
-        yield return 0;
+        yield return null;
 
         Dictionary<EWorldState, bool> mergedWorldState = new(World.Instance._worldState);
         _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
@@ -80,12 +72,18 @@ public class MinerAgent : MonoBehaviour
         Node root = new Node(mergedWorldState);
         List<Node> leaves = new List<Node>();
 
-        GetBestPlan(out var goal, out var actions);
+        Dictionary<EWorldState, bool> goal = null;
+        List<BaseAction> actions = null;
+
+        GetBestPlan(ref goal, ref actions);
 
         Miner_GOAP.BuildGraph(root, ref leaves, actions, goal);
 
         if (leaves.Count <= 0)
+        {
+            StartCoroutine(Sleep());
             yield break;
+        }
 
         leaves = leaves.OrderBy(item => item._totalCost).ToList();
         Debug.Log("Leaves Number: " + leaves.Count);
@@ -93,36 +91,52 @@ public class MinerAgent : MonoBehaviour
         StartCoroutine(ExecutePlan(leaves[0]._actions));
     }
 
-    private void GetBestPlan(out Dictionary<EWorldState, bool> oGoal, out List<BaseAction> oActions)
+    private void GetBestPlan(ref Dictionary<EWorldState, bool> pGoal, ref List<BaseAction> pActions)
     {
         bool ingotAvailable = World.Instance._worldState[EWorldState.AVAILABLE_INGOT];
         bool furnaceAvailable = World.Instance._worldState[EWorldState.AVAILABLE_FURNACE];
 
-        oGoal = null;
-        oActions = null;
-
         if (ingotAvailable)
         {
-            oActions = _storeIngotActions;
-            oGoal = new Dictionary<EWorldState, bool>()
+            pActions = new(_storeIngotActions);
+            pGoal = new Dictionary<EWorldState, bool>()
             {
                 { EWorldState.STORE_INGOT, true },
             };
-
-
         }
         else if (furnaceAvailable)
         {
-            oActions = _craftIngotActions;
-            oGoal = new Dictionary<EWorldState, bool>()
+            pActions = new(_craftIngotActions);
+            pGoal = new Dictionary<EWorldState, bool>()
             {
                 { EWorldState.PROCESS_ORE, true },
             };
         }
     }
 
+    private IEnumerator Sleep()
+    {
+        while (true)
+        {
+            yield return 0;
+
+            bool ingotAvailable = World.Instance._worldState[EWorldState.AVAILABLE_INGOT];
+            bool furnaceAvailable = World.Instance._worldState[EWorldState.AVAILABLE_FURNACE];
+            bool chunkAvailable = World.Instance._worldState[EWorldState.AVAILABLE_CHUNK];
+
+            if (!ingotAvailable && !furnaceAvailable && !chunkAvailable)
+                continue;
+            
+            StartCoroutine(BuildGraph());
+            yield break;
+            
+        }
+    }
+
     private IEnumerator ExecutePlan(List<BaseAction> pPlan)
     {
+        bool hasStartedAction = false;
+
         while (pPlan.Count > 0)
         {
             BaseAction action = pPlan[0];
@@ -135,7 +149,12 @@ public class MinerAgent : MonoBehaviour
                 yield break;
             }
 
-            action.StartAction(this);
+            if (!hasStartedAction)
+            {
+                hasStartedAction = true;
+                action.StartAction(this);
+            }
+
             action.Execute(this);
 
 
@@ -145,6 +164,7 @@ public class MinerAgent : MonoBehaviour
                 continue;
             }
 
+            hasStartedAction = false;
             action.OnFinished(this);
             pPlan.RemoveAt(0);
         }

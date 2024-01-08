@@ -7,14 +7,11 @@ public abstract class BaseAction
     protected Dictionary<EWorldState, bool> _conditions;
 
     public int  _cost = 1;
-    protected Action _action;
-    public bool _hasStarted = false;
 
 
-    public BaseAction(Action pAction)
+    public BaseAction()
     {
         _conditions = new Dictionary<EWorldState, bool>();
-        _action = pAction;
     }
 
     public bool IsValid(Dictionary<EWorldState, bool> pSimulated)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FurnaceToProcess_Action : MoveToFurnace_Action
 {
-    public FurnaceToProcess_Action(Action pAction) : base(pAction)
+    public FurnaceToProcess_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_FURNACE,  true);
         _conditions.Add(EWorldState.HAS_ORES,           true);
@@ -13,8 +13,6 @@ public class FurnaceToProcess_Action : MoveToFurnace_Action
     public override void StartAction(MinerAgent pAgent)
     {
         base.StartAction(pAgent);
-        if (_hasStarted)
-            return;
 
         List<Furnace> furnaces = World.Instance.GetAvailableFurnaces(pAgent._orePossesed);
         if (furnaces.Count <= 0)

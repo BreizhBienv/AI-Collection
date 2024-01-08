@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class MoveToOre_Action : BaseAction
 {
-    public MoveToOre_Action(Action pAction) 
-        : base(pAction)
+    public MoveToOre_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_CHUNK,    true);
         _conditions.Add(EWorldState.NEAR_CHUNK,         false);
@@ -17,7 +16,9 @@ public class MoveToOre_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWS = new(pSimulated)
         {
-            [EWorldState.NEAR_CHUNK] = true
+            [EWorldState.NEAR_CHUNK] = true,
+            [EWorldState.NEAR_CHEST] = false,
+            [EWorldState.NEAR_FURNACE] = false
         };
 
         return newWS;
@@ -25,11 +26,6 @@ public class MoveToOre_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
 

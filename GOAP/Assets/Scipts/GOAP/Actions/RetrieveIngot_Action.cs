@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RetrieveIngot_Action : BaseAction
 {
-    public RetrieveIngot_Action(Action pAction) : base(pAction)
+    public RetrieveIngot_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_INGOT,    true);
         _conditions.Add(EWorldState.NEAR_FURNACE,       true);
@@ -23,19 +23,12 @@ public class RetrieveIngot_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         Furnace furnace = pAgent._target?.GetComponent<Furnace>();
         if (furnace == null)
         {
             pAgent._target = null;
             return;
         }
-
-        Debug.Log("Retrieving Ingot");
     }
 
 
@@ -46,7 +39,10 @@ public class RetrieveIngot_Action : BaseAction
             return;
 
         if (furnace.TryPickUp())
+        {
+            Debug.Log("Retrieved Ingot");
             pAgent._ingotPossesed++;
+        }
     }
 
     public override bool IsComplete(MinerAgent pAgent)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProcessOre_Action : BaseAction
 {
-    public ProcessOre_Action(Action pAction) : base(pAction)
+    public ProcessOre_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_FURNACE, true);
         _conditions.Add(EWorldState.NEAR_FURNACE, true);
@@ -23,11 +23,6 @@ public class ProcessOre_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         Furnace furnace = pAgent._target?.GetComponent<Furnace>();
         if (furnace == null)
         {
@@ -54,7 +49,7 @@ public class ProcessOre_Action : BaseAction
 
     public override void OnFinished(MinerAgent pAgent)
     {
-        if (pAgent._orePossesed % 2 <= 0)
+        if (pAgent._orePossesed % 2 <= 0 && pAgent._orePossesed > 0)
             return;
 
         pAgent._target = null;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveToChest_Action : BaseAction
 {
-    public MoveToChest_Action(Action pAction) : base(pAction)
+    public MoveToChest_Action()
     {
         _conditions.Add(EWorldState.NEAR_CHEST, false);
         _conditions.Add(EWorldState.HAS_INGOTS, true);
@@ -15,7 +15,9 @@ public class MoveToChest_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWS = new(pSimulated)
         {
-            [EWorldState.NEAR_CHEST] = true
+            [EWorldState.NEAR_CHEST] = true,
+            [EWorldState.NEAR_CHUNK] = false,
+            [EWorldState.NEAR_FURNACE] = false
         };
 
         return newWS;
@@ -23,11 +25,6 @@ public class MoveToChest_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
 
@@ -36,7 +33,6 @@ public class MoveToChest_Action : BaseAction
 
         Debug.Log("Moving To Chest");
         pAgent._target = World.Instance.GetRandomChest().gameObject;
-
 
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
@@ -53,7 +49,7 @@ public class MoveToChest_Action : BaseAction
 
     public override bool IsComplete(MinerAgent pAgent)
     {
-        if (pAgent._target == null || pAgent.CloseEnoughToTarget())
+        if (pAgent._target == null || !pAgent.CloseEnoughToTarget())
             return false;
         
         Debug.Log("Moved To " + pAgent._target.name);

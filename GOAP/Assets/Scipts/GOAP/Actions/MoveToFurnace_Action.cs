@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveToFurnace_Action : BaseAction
 {
-    public MoveToFurnace_Action(Action pAction) : base(pAction)
+    public MoveToFurnace_Action()
     {
         _conditions.Add(EWorldState.NEAR_FURNACE, false);
     }
@@ -13,7 +13,9 @@ public class MoveToFurnace_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWorldState = new(pSimulated)
         {
-            [EWorldState.NEAR_FURNACE] = true
+            [EWorldState.NEAR_FURNACE] = true,
+            [EWorldState.NEAR_CHEST] = false,
+            [EWorldState.NEAR_CHUNK] = false
         };
 
         return newWorldState;
@@ -21,11 +23,6 @@ public class MoveToFurnace_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        if (_hasStarted)
-            return;
-
-        _hasStarted = true;
-
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
     }

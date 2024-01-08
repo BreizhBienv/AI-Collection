@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FurnaceToRetrieve_Action : MoveToFurnace_Action
 {
-    public FurnaceToRetrieve_Action(Action pAction) : base(pAction)
+    public FurnaceToRetrieve_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_INGOT, true);
     }
@@ -12,8 +12,6 @@ public class FurnaceToRetrieve_Action : MoveToFurnace_Action
     public override void StartAction(MinerAgent pAgent)
     {
         base.StartAction(pAgent);
-        if (_hasStarted)
-            return;
 
         List<Furnace> furnaces = World.Instance.GetFurnacesWithIron();
         if (furnaces.Count <= 0)
