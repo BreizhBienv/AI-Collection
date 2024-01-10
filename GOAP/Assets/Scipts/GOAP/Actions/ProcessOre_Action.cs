@@ -47,7 +47,7 @@ public class ProcessOre_Action : BaseAction
         return true;
     }
 
-    public override void OnFinished(MinerAgent pAgent)
+    public override void FinishAction(MinerAgent pAgent)
     {
         if (pAgent._orePossesed % 2 <= 0 && pAgent._orePossesed > 0)
             return;

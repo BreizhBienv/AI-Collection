@@ -40,7 +40,7 @@ public class MoveToFurnace_Action : BaseAction
         return true;
     }
 
-    public override void OnFinished(MinerAgent pAgent)
+    public override void FinishAction(MinerAgent pAgent)
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = true;
     }

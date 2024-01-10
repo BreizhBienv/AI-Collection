@@ -27,11 +27,6 @@ public class MoveToChest_Action : BaseAction
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
-
-        Debug.Log("Moving To Chest");
-        pAgent._target = World.Instance.GetRandomChest().gameObject;
-
-        pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
     }
 
     public override void Execute(MinerAgent pAgent)
@@ -40,8 +35,10 @@ public class MoveToChest_Action : BaseAction
         if (chest != null)
             return;
 
-        pAgent._target = null;
-        pAgent._navMeshAgent.isStopped = true;
+        pAgent._target = World.Instance.GetRandomChest().gameObject;
+        pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
+
+        Debug.Log("Moving To Chest");
     }
 
     public override bool IsComplete(MinerAgent pAgent)
@@ -53,7 +50,7 @@ public class MoveToChest_Action : BaseAction
         return true;
     }
 
-    public override void OnFinished(MinerAgent pAgent)
+    public override void FinishAction(MinerAgent pAgent)
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = true;
     }

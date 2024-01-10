@@ -32,5 +32,5 @@ public abstract class BaseAction
     public abstract void StartAction(MinerAgent pAgent);
     public abstract void Execute(MinerAgent pAgent);
     public abstract bool IsComplete(MinerAgent pAgent);
-    public abstract void OnFinished(MinerAgent pAgent);
+    public abstract void FinishAction(MinerAgent pAgent);
 }

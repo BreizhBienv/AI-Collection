@@ -49,7 +49,7 @@ public class StoreIngot_Action : BaseAction
     }
 
 
-    public override void OnFinished(MinerAgent pAgent)
+    public override void FinishAction(MinerAgent pAgent)
     {
         if (pAgent._ingotPossesed > 0)
             return;

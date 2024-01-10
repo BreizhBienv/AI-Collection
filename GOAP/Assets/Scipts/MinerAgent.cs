@@ -124,12 +124,11 @@ public class MinerAgent : MonoBehaviour
             bool furnaceAvailable = World.Instance._worldState[EWorldState.AVAILABLE_FURNACE];
             bool chunkAvailable = World.Instance._worldState[EWorldState.AVAILABLE_CHUNK];
 
-            if (!ingotAvailable && !furnaceAvailable && !chunkAvailable)
+            if (!ingotAvailable || (!furnaceAvailable && !chunkAvailable))
                 continue;
-            
+
             StartCoroutine(BuildGraph());
             yield break;
-            
         }
     }
 
@@ -157,7 +156,6 @@ public class MinerAgent : MonoBehaviour
 
             action.Execute(this);
 
-
             if (!action.IsComplete(this))
             {
                 yield return 0;
@@ -165,7 +163,7 @@ public class MinerAgent : MonoBehaviour
             }
 
             hasStartedAction = false;
-            action.OnFinished(this);
+            action.FinishAction(this);
             pPlan.RemoveAt(0);
         }
 
@@ -184,35 +182,4 @@ public class MinerAgent : MonoBehaviour
 
         return _navMeshAgent.remainingDistance <= Utils.stoppingDistance;
     }
-
-    #region Actions
-    private void MoveToOreChunk()
-    {
-
-    }
-
-    private void MoveToFurnace()
-    {
-    }
-
-    private void MoveToChest()
-    {
-    }
-
-    private void MineOreChunk()
-    {
-    }
-
-    private void ProcessOre()
-    {
-    }
-
-    private void RetrieveIngot()
-    {
-    }
-
-    private void StoreIngot()
-    {
-    }
-    #endregion
 }
