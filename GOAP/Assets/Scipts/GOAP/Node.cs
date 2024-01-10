@@ -16,7 +16,7 @@ public class Node
     {
         _parent = pParent;
         _worldState = pWorldState;
-        _actions = pParent._actions == null ? new() : pParent._actions;
+        _actions = pParent._actions == null ? new() : new(pParent._actions);
         _actions.Add(pAction);
 
         _totalCost = pParent._totalCost + pAction._cost;

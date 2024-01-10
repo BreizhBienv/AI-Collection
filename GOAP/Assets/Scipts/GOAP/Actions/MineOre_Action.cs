@@ -26,7 +26,7 @@ public class MineOre_Action : BaseAction
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
         if (chunk == null)
         {
-            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
             return;
         }
 
@@ -35,7 +35,7 @@ public class MineOre_Action : BaseAction
 
     public override void Execute(MinerAgent pAgent)
     {
-        OreChunk chunk = pAgent._target.GetComponent<OreChunk>();
+        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
         if (chunk == null)
             return;
 
@@ -52,15 +52,11 @@ public class MineOre_Action : BaseAction
     {
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
         if (chunk == null || chunk.Amount <= 0)
-        {
-            pAgent._target = null;
             pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
-        }
 
         if (pAgent._orePossesed >= Utils.oreNeededToCraft)
         {
             chunk?.ReserveChunk(null);
-            pAgent._target = null;
             pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
         }
     }

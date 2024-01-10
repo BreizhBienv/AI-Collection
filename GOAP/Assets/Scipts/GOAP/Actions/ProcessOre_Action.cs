@@ -26,7 +26,7 @@ public class ProcessOre_Action : BaseAction
         Furnace furnace = pAgent._target?.GetComponent<Furnace>();
         if (furnace == null)
         {
-            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
             return;
         }
 
@@ -52,7 +52,6 @@ public class ProcessOre_Action : BaseAction
         if (pAgent._orePossesed % 2 <= 0 && pAgent._orePossesed > 0)
             return;
 
-        pAgent._target = null;
         pAgent._perceivedWorldState[EWorldState.HAS_ORES] = false;
     }
 }

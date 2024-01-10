@@ -28,9 +28,6 @@ public class MoveToChest_Action : BaseAction
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
 
-        if (pAgent._target != null)
-            return;
-
         Debug.Log("Moving To Chest");
         pAgent._target = World.Instance.GetRandomChest().gameObject;
 

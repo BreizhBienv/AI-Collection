@@ -11,11 +11,11 @@ public class FurnaceToRetrieve_Action : MoveToFurnace_Action
 
     public override void StartAction(MinerAgent pAgent)
     {
-        base.StartAction(pAgent);
-
         List<Furnace> furnaces = World.Instance.GetFurnacesWithIron();
         if (furnaces.Count <= 0)
             return;
+
+        base.StartAction(pAgent);
 
         int rand = UnityEngine.Random.Range(0, furnaces.Count - 1);
 

@@ -39,7 +39,10 @@ public class Furnace : MonoBehaviour
     public int TryCraft(int pOreAmount)
     {
         if (!CanCraft(pOreAmount))
+        {
+            World.Instance.UpdateWorldState_AvailableFurnace();
             return pOreAmount;
+        }
 
         if (_isCrafting)
         {
@@ -88,8 +91,8 @@ public class Furnace : MonoBehaviour
                 _progressBarRoot.gameObject.SetActive(false);
             }
 
-            World.Instance.SetWorldState(EWorldState.AVAILABLE_FURNACE, true);
-            World.Instance.SetWorldState(EWorldState.AVAILABLE_INGOT, true);
+            World.Instance.UpdateWorldState_AvailableFurnace();
+            World.Instance.UpdateWorldState_AvailableIngot();
 
             yield return null;
         }
@@ -109,6 +112,7 @@ public class Furnace : MonoBehaviour
             if (_barCrafted == 0)
                 _ironVisual.gameObject.SetActive(false);
 
+            World.Instance.UpdateWorldState_AvailableIngot();
             return true;
         }
         return false;

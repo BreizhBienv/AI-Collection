@@ -26,7 +26,7 @@ public class StoreIngot_Action : BaseAction
         Chest chest = pAgent._target?.GetComponent<Chest>();
         if (chest == null)
         {
-            pAgent._target = null;
+            pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
             return;
         }
 
@@ -35,7 +35,7 @@ public class StoreIngot_Action : BaseAction
 
     public override void Execute(MinerAgent pAgent)
     {
-        Chest chest = pAgent._target.GetComponent<Chest>();
+        Chest chest = pAgent._target?.GetComponent<Chest>();
         if (chest == null)
             return;
 
@@ -54,7 +54,6 @@ public class StoreIngot_Action : BaseAction
         if (pAgent._ingotPossesed > 0)
             return;
 
-        pAgent._target = null;
         pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = false;
     }
 }

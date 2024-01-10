@@ -24,17 +24,16 @@ public class RetrieveIngot_Action : BaseAction
     public override void StartAction(MinerAgent pAgent)
     {
         Furnace furnace = pAgent._target?.GetComponent<Furnace>();
-        if (furnace == null)
-        {
-            pAgent._target = null;
+        if (furnace != null)
             return;
-        }
+
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
     }
 
 
     public override void Execute(MinerAgent pAgent)
     {
-        Furnace furnace = pAgent._target.GetComponent<Furnace>();
+        Furnace furnace = pAgent._target?.GetComponent<Furnace>();
         if (furnace == null)
             return;
 
@@ -55,7 +54,6 @@ public class RetrieveIngot_Action : BaseAction
         if (pAgent._ingotPossesed <= 0)
             return;
 
-        pAgent._target = null;
         pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = true;
     }
 }

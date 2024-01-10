@@ -25,14 +25,22 @@ public class World : MonoBehaviour
 
     [NonSerialized] public Dictionary<EWorldState, bool> _worldState;
 
-    public void SetWorldState(EWorldState pState, bool pValue)
+    public void UpdateWorldState_AvailableIngot()
     {
-        _worldState[pState] = pValue;
+        int count = GetFurnacesWithIron().Count();
+        if (count > 0)
+            _worldState[EWorldState.AVAILABLE_INGOT] = true;
+        else
+            _worldState[EWorldState.AVAILABLE_INGOT] = false;
     }
 
-    public bool GetWorldState(EWorldState pState)
+    public void UpdateWorldState_AvailableFurnace()
     {
-        return _worldState[pState];
+        int count = GetAvailableFurnaces(Utils.oreNeededToCraft).Count();
+        if (count > 0)
+            _worldState[EWorldState.AVAILABLE_FURNACE] = true;
+        else
+            _worldState[EWorldState.AVAILABLE_FURNACE] = false;
     }
 
     public void RegisterOre(OreChunk ore)
