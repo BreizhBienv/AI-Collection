@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MineOre_Action : BaseAction
 {
+    public float _actionDuration = 2f;
     public MineOre_Action()
     {
         _conditions.Add(EWorldState.AVAILABLE_CHUNK,    true);
@@ -40,17 +40,22 @@ public class MineOre_Action : BaseAction
             return;
 
         Debug.Log("Mining Ore");
-        pAgent._orePossesed += chunk.PickUpOre();
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
+        if (pTimeInAction < _actionDuration)
+            return false;
+
         return true;
     }
 
     public override void FinishAction(MinerAgent pAgent)
     {
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
+
+        pAgent._orePossesed += chunk.PickUpOre();
+
         if (pAgent._orePossesed >= Utils.oreNeededToCraft)
         {
             chunk?.ReserveChunk(null);

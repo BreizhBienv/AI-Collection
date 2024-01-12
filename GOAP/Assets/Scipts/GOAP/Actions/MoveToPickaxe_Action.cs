@@ -1,47 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveToOre_Action : BaseAction
+public class MoveToPickaxe_Action : BaseAction
 {
-    public MoveToOre_Action()
+    public MoveToPickaxe_Action()
     {
-        _conditions.Add(EWorldState.AVAILABLE_CHUNK,    true);
-        _conditions.Add(EWorldState.NEAR_CHUNK,         false);
-        _conditions.Add(EWorldState.HAS_ORES,           false);
+        _conditions.Add(EWorldState.AVAILABLE_PICKAXE,  true);
+        _conditions.Add(EWorldState.NEAR_PICKAXE,       false);
+        _conditions.Add(EWorldState.HAS_PICKAXE,        false);
     }
 
     public override Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated)
     {
-        Dictionary<EWorldState, bool> newWS = new(pSimulated)
+        Dictionary<EWorldState, bool> newWorldState = new(pSimulated)
         {
-            [EWorldState.NEAR_CHUNK]    = true,
+            [EWorldState.NEAR_PICKAXE]  = true,
             [EWorldState.NEAR_CHEST]    = false,
+            [EWorldState.NEAR_CHUNK]    = false,
             [EWorldState.NEAR_FURNACE]  = false,
-            [EWorldState.NEAR_PICKAXE]  = false,
         };
 
-        return newWS;
+        return newWorldState;
     }
-
     public override void StartAction(MinerAgent pAgent)
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST]     = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK]     = false;
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE]   = false;
-        pAgent._perceivedWorldState[EWorldState.NEAR_PICKAXE]   = false;
     }
 
     public override void Execute(MinerAgent pAgent)
     {
-        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
-        if (chunk != null && !chunk.IsOccupied())
+        Pickaxe pickaxe = pAgent._target?.GetComponent<Pickaxe>();
+        if (pickaxe != null && World.Instance.IsPickaxeAvailable(pickaxe))
             return;
 
-        List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
-        if (chunks.Count <= 0)
+        List<Pickaxe> pickaxes = World.Instance._pickaxes;
+        if (pickaxes.Count <= 0)
             return;
 
-        int rand = Random.Range(0, chunks.Count - 1);
-        pAgent._target = chunks[rand].gameObject;
+        pAgent._target = World.Instance.GetRandomPickaxe().gameObject;
         pAgent._navMeshAgent.SetDestination(pAgent._target.transform.position);
 
         Debug.Log("Moving To " + pAgent._target.name);
@@ -58,7 +56,6 @@ public class MoveToOre_Action : BaseAction
 
     public override void FinishAction(MinerAgent pAgent)
     {
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = true;
+        pAgent._perceivedWorldState[EWorldState.NEAR_PICKAXE] = true;
     }
-
 }

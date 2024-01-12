@@ -12,6 +12,7 @@ public class MinerAgent : MonoBehaviour
 {
     public NavMeshAgent _navMeshAgent { get; private set; }
 
+    [NonSerialized] public GameObject _target = null;
     [NonSerialized] public int _orePossesed;
     [NonSerialized] public int _ingotPossesed;
 
@@ -20,7 +21,7 @@ public class MinerAgent : MonoBehaviour
     private List<BaseAction> _craftIngotActions;
     private List<BaseAction> _storeIngotActions;
 
-    [NonSerialized] public GameObject _target = null;
+    public GameObject _PickaxeSlot;
 
     protected virtual void Awake()
     {
@@ -32,18 +33,24 @@ public class MinerAgent : MonoBehaviour
             { EWorldState.NEAR_CHUNK,   false },
             { EWorldState.NEAR_FURNACE, false },
             { EWorldState.NEAR_CHEST,   false },
+            { EWorldState.NEAR_PICKAXE, false },
             { EWorldState.HAS_ORES,     false },
             { EWorldState.HAS_INGOTS,   false },
+            { EWorldState.HAS_PICKAXE,  false },
             { EWorldState.PROCESS_ORE,  false },
             { EWorldState.STORE_INGOT,  false },
         };
 
         _craftIngotActions = new List<BaseAction>()
         {
+            { new MoveToPickaxe_Action() },
             { new MoveToOre_Action() },
             { new FurnaceToProcess_Action() },
 
-            { new MineOre_Action() },
+            { new EquipPickaxe_Action() },
+            //{ new MineOre_Action() },
+            { new MineWithHands_Action() },
+            { new MineWithPickaxe_Action() },
             { new ProcessOre_Action() },
         };
 
@@ -135,6 +142,7 @@ public class MinerAgent : MonoBehaviour
     private IEnumerator ExecutePlan(List<BaseAction> pPlan)
     {
         bool hasStartedAction = false;
+        float timeInAction = 0f;
 
         while (pPlan.Count > 0)
         {
@@ -155,14 +163,16 @@ public class MinerAgent : MonoBehaviour
             }
 
             action.Execute(this);
+            timeInAction += Time.deltaTime;
 
-            if (!action.IsComplete(this))
+            if (!action.IsComplete(this, timeInAction))
             {
                 yield return 0;
                 continue;
             }
 
             hasStartedAction = false;
+            timeInAction = 0f;
             action.FinishAction(this);
             pPlan.RemoveAt(0);
         }
@@ -181,5 +191,29 @@ public class MinerAgent : MonoBehaviour
             return false;
 
         return _navMeshAgent.remainingDistance <= Utils.stoppingDistance;
+    }
+
+    public void EquipPickaxe(Pickaxe pPickaxe)
+    {
+        if (pPickaxe == null || !World.Instance.IsPickaxeAvailable(pPickaxe))
+            return;
+
+        pPickaxe.OnUnavailable();
+        pPickaxe.transform.SetParent(_PickaxeSlot.transform);
+        pPickaxe.transform.localPosition = Vector3.zero;
+        pPickaxe.transform.rotation = Quaternion.identity;
+    }
+
+    public void UnequipPickaxe()
+    {
+        Pickaxe pickaxe = _PickaxeSlot.GetComponentInChildren<Pickaxe>();
+        if (pickaxe == null) 
+            return;
+
+        pickaxe.OnAvailable();
+        pickaxe.gameObject.transform.SetParent(null);
+        _perceivedWorldState[EWorldState.HAS_PICKAXE] = false;
+
+        pickaxe.Impulse();
     }
 }

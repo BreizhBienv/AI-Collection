@@ -16,12 +16,14 @@ public class World : MonoBehaviour
             { EWorldState.AVAILABLE_CHUNK,      true },
             { EWorldState.AVAILABLE_FURNACE,    true },
             { EWorldState.AVAILABLE_INGOT,      false },
+            { EWorldState.AVAILABLE_PICKAXE,    false },
         };
     }
 
     public List<OreChunk> _oreChunks { get; private set; } = new List<OreChunk>();
     public List<Furnace> _furnaces { get; private set; } = new List<Furnace>();
     public List<Chest> _chests { get; private set; } = new List<Chest>();
+    public List<Pickaxe> _pickaxes { get; private set; } = new List<Pickaxe>();
 
     [NonSerialized] public Dictionary<EWorldState, bool> _worldState;
 
@@ -82,6 +84,26 @@ public class World : MonoBehaviour
             _chests.Remove(chest);
     }
 
+    public void RegisterPickaxe(Pickaxe pPickaxe)
+    {
+        if (_pickaxes.Contains(pPickaxe))
+            return;
+
+        _pickaxes.Add(pPickaxe);
+        _worldState[EWorldState.AVAILABLE_PICKAXE] = true;
+    }
+
+    public void UnregisterPickaxe(Pickaxe pPickaxe)
+    {
+        if (!_pickaxes.Contains(pPickaxe))
+            return;
+
+        _pickaxes.Remove(pPickaxe);
+        
+        if (!_pickaxes.Any())
+            _worldState[EWorldState.AVAILABLE_PICKAXE] = false;
+    }
+
     public List<OreChunk> GetAvailableOreChunks()
     {
         return _oreChunks.Where(chunk => !chunk.IsOccupied()).ToList();
@@ -101,5 +123,16 @@ public class World : MonoBehaviour
     {
         int randChest = UnityEngine.Random.Range(0, _chests.Count - 1);
         return _chests[randChest];
+    }
+
+    public Pickaxe GetRandomPickaxe()
+    {
+        int randChest = UnityEngine.Random.Range(0, _pickaxes.Count - 1);
+        return _pickaxes[randChest];
+    }
+
+    public bool IsPickaxeAvailable(Pickaxe pPickaxe)
+    {
+        return _pickaxes.Contains(pPickaxe);
     }
 }

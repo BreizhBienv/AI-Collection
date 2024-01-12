@@ -42,7 +42,7 @@ public class ProcessOre_Action : BaseAction
         pAgent._orePossesed = furnace.TryCraft(pAgent._orePossesed);
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
         return true;
     }

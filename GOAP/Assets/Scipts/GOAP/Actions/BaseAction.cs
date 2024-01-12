@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 public abstract class BaseAction
 {
@@ -31,6 +29,6 @@ public abstract class BaseAction
 
     public abstract void StartAction(MinerAgent pAgent);
     public abstract void Execute(MinerAgent pAgent);
-    public abstract bool IsComplete(MinerAgent pAgent);
+    public abstract bool IsComplete(MinerAgent pAgent, float pTimeInAction);
     public abstract void FinishAction(MinerAgent pAgent);
 }

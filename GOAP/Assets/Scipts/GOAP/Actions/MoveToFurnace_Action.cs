@@ -13,9 +13,10 @@ public class MoveToFurnace_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWorldState = new(pSimulated)
         {
-            [EWorldState.NEAR_FURNACE] = true,
-            [EWorldState.NEAR_CHEST] = false,
-            [EWorldState.NEAR_CHUNK] = false
+            [EWorldState.NEAR_FURNACE]  = true,
+            [EWorldState.NEAR_CHEST]    = false,
+            [EWorldState.NEAR_CHUNK]    = false,
+            [EWorldState.NEAR_PICKAXE]  = false
         };
 
         return newWorldState;
@@ -23,15 +24,16 @@ public class MoveToFurnace_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = false;
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHEST]     = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK]     = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_PICKAXE]   = false;
     }
 
     public override void Execute(MinerAgent pAgent)
     {
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
         if (pAgent._target == null || !pAgent.CloseEnoughToTarget())
             return false;

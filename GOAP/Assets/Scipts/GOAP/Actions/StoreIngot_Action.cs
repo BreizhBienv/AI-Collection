@@ -43,11 +43,10 @@ public class StoreIngot_Action : BaseAction
         pAgent._ingotPossesed = 0;
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
         return true;
     }
-
 
     public override void FinishAction(MinerAgent pAgent)
     {

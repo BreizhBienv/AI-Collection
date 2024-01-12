@@ -15,9 +15,10 @@ public class MoveToChest_Action : BaseAction
     {
         Dictionary<EWorldState, bool> newWS = new(pSimulated)
         {
-            [EWorldState.NEAR_CHEST] = true,
-            [EWorldState.NEAR_CHUNK] = false,
-            [EWorldState.NEAR_FURNACE] = false
+            [EWorldState.NEAR_CHEST]    = true,
+            [EWorldState.NEAR_CHUNK]    = false,
+            [EWorldState.NEAR_FURNACE]  = false,
+            [EWorldState.NEAR_PICKAXE]  = false
         };
 
         return newWS;
@@ -25,8 +26,9 @@ public class MoveToChest_Action : BaseAction
 
     public override void StartAction(MinerAgent pAgent)
     {
-        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
-        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK]     = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE]   = false;
+        pAgent._perceivedWorldState[EWorldState.NEAR_PICKAXE]   = false;
     }
 
     public override void Execute(MinerAgent pAgent)
@@ -41,7 +43,7 @@ public class MoveToChest_Action : BaseAction
         Debug.Log("Moving To Chest");
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
         if (pAgent._target == null || !pAgent.CloseEnoughToTarget())
             return false;

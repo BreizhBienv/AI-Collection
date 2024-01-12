@@ -44,7 +44,7 @@ public class RetrieveIngot_Action : BaseAction
         }
     }
 
-    public override bool IsComplete(MinerAgent pAgent)
+    public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
     {
         return true;
     }
@@ -55,5 +55,8 @@ public class RetrieveIngot_Action : BaseAction
             return;
 
         pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = true;
+        
+        pAgent.UnequipPickaxe();
+        pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
     }
 }
