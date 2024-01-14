@@ -54,4 +54,8 @@ public class ProcessOre_Action : BaseAction
 
         pAgent._perceivedWorldState[EWorldState.HAS_ORES] = false;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

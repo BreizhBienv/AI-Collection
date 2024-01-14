@@ -21,6 +21,15 @@ public class MineOre_Action : BaseAction
         return newWorldState;
     }
 
+    public override void AbortAction(MinerAgent pAgent)
+    {
+        if (pAgent._target == null)
+            return;
+
+        OreChunk chunk = pAgent._target.GetComponent<OreChunk>();
+        chunk?.ReserveChunk(null);
+    }
+
     public override void StartAction(MinerAgent pAgent)
     {
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
@@ -31,15 +40,11 @@ public class MineOre_Action : BaseAction
         }
 
         chunk.ReserveChunk(pAgent);
+        Debug.Log("Mining Ore");
     }
 
     public override void Execute(MinerAgent pAgent)
     {
-        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
-        if (chunk == null)
-            return;
-
-        Debug.Log("Mining Ore");
     }
 
     public override bool IsComplete(MinerAgent pAgent, float pTimeInAction)
@@ -55,12 +60,12 @@ public class MineOre_Action : BaseAction
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
 
         pAgent._orePossesed += chunk.PickUpOre();
+        chunk?.ReserveChunk(null);
+
+        Debug.Log("Mined Ore with hands");
 
         if (pAgent._orePossesed >= Utils.oreNeededToCraft)
-        {
-            chunk?.ReserveChunk(null);
             pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
-        }
 
         if (chunk == null || chunk.Amount <= 0)
         {

@@ -19,11 +19,6 @@ public class OreChunk : MonoBehaviour
         World.Instance.UnregisterOre(this);
     }
 
-    public bool IsOccupiedBy(MinerAgent pAgent)
-    {
-        return pAgent == _occupiedBy;
-    }
-
     public bool IsOccupied()
     {
         return _occupiedBy != null;
@@ -32,6 +27,7 @@ public class OreChunk : MonoBehaviour
     public void ReserveChunk(MinerAgent pReservedBy)
     {
         _occupiedBy = pReservedBy;
+        //World.Instance.UpdateAvailableChunk();
     }
 
     public int PickUpOre(int pAmount = 1)

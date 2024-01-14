@@ -51,4 +51,8 @@ public class EquipPickaxe_Action : BaseAction
     {
         pAgent._perceivedWorldState[EWorldState.HAS_PICKAXE] = true;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

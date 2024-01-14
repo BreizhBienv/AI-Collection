@@ -22,5 +22,4 @@ public enum EWorldState : uint
     HAS_PICKAXE,
     PROCESS_ORE,
     STORE_INGOT,
-    DO_NOTHING,
 }

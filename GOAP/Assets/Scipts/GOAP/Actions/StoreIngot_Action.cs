@@ -55,4 +55,8 @@ public class StoreIngot_Action : BaseAction
 
         pAgent._perceivedWorldState[EWorldState.HAS_INGOTS] = false;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

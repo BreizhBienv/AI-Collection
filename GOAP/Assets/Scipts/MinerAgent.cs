@@ -4,8 +4,8 @@ using UnityEngine.AI;
 using System.Linq;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using System.Data;
+using TMPro;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class MinerAgent : MonoBehaviour
@@ -69,12 +69,19 @@ public class MinerAgent : MonoBehaviour
         StartCoroutine(BuildGraph());
     }
 
+    public Dictionary<EWorldState, bool> MergeWorldStates()
+    {
+        Dictionary<EWorldState, bool> mergedWorldState = new(World.Instance._worldState);
+        _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
+
+        return mergedWorldState;
+    }
+
     private IEnumerator BuildGraph()
     {
         yield return null;
 
-        Dictionary<EWorldState, bool> mergedWorldState = new(World.Instance._worldState);
-        _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
+        Dictionary<EWorldState, bool> mergedWorldState = MergeWorldStates();
 
         Node root = new Node(mergedWorldState);
         List<Node> leaves = new List<Node>();
@@ -152,6 +159,7 @@ public class MinerAgent : MonoBehaviour
             _perceivedWorldState.ToList().ForEach(x => mergedWorldState.Add(x.Key, x.Value));
             if (!action.IsValid(mergedWorldState))
             {
+                action.AbortAction(this);
                 Abort();
                 yield break;
             }

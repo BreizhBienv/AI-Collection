@@ -56,4 +56,8 @@ public class MoveToChest_Action : BaseAction
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_CHEST] = true;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

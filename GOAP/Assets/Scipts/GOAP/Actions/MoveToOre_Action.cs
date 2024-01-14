@@ -38,7 +38,10 @@ public class MoveToOre_Action : BaseAction
 
         List<OreChunk> chunks = World.Instance.GetAvailableOreChunks();
         if (chunks.Count <= 0)
+        {
+            pAgent._target = null;
             return;
+        }
 
         int rand = Random.Range(0, chunks.Count - 1);
         pAgent._target = chunks[rand].gameObject;
@@ -61,4 +64,7 @@ public class MoveToOre_Action : BaseAction
         pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = true;
     }
 
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

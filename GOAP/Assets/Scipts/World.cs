@@ -27,6 +27,15 @@ public class World : MonoBehaviour
 
     [NonSerialized] public Dictionary<EWorldState, bool> _worldState;
 
+    public void UpdateAvailableChunk()
+    {
+        int count = GetAvailableOreChunks().Count;
+        if (count > 0)
+            _worldState[EWorldState.AVAILABLE_CHUNK] = true;
+        else
+            _worldState[EWorldState.AVAILABLE_CHUNK] = false;
+    }
+
     public void UpdateWorldState_AvailableIngot()
     {
         int count = GetFurnacesWithIron().Count();

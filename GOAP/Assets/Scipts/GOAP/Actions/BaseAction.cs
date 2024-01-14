@@ -26,7 +26,7 @@ public abstract class BaseAction
 
     public abstract Dictionary<EWorldState, bool> ApplyEffect(Dictionary<EWorldState, bool> pSimulated);
 
-
+    public abstract void AbortAction(MinerAgent pAgent);
     public abstract void StartAction(MinerAgent pAgent);
     public abstract void Execute(MinerAgent pAgent);
     public abstract bool IsComplete(MinerAgent pAgent, float pTimeInAction);

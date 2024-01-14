@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class MineWithPickaxe_Action : MineOre_Action
@@ -12,29 +11,17 @@ public class MineWithPickaxe_Action : MineOre_Action
         _cost = 1;
     }
 
-    public override void StartAction(MinerAgent pAgent)
-    {
-        OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
-        if (chunk == null)
-        {
-            pAgent._perceivedWorldState[EWorldState.NEAR_CHUNK] = false;
-            pAgent._perceivedWorldState[EWorldState.HAS_PICKAXE] = false;
-            pAgent.UnequipPickaxe();
-            return;
-        }
-
-        chunk.ReserveChunk(pAgent);
-    }
-
     public override void FinishAction(MinerAgent pAgent)
     {
         OreChunk chunk = pAgent._target?.GetComponent<OreChunk>();
 
         pAgent._orePossesed += chunk.PickUpOre();
+        chunk?.ReserveChunk(null);
+
+        Debug.Log("Mined Ore with pickaxe");
 
         if (pAgent._orePossesed >= Utils.oreNeededToCraft)
         {
-            chunk?.ReserveChunk(null);
             pAgent.UnequipPickaxe();
             pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
         }

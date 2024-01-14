@@ -58,4 +58,8 @@ public class MoveToPickaxe_Action : BaseAction
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_PICKAXE] = true;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

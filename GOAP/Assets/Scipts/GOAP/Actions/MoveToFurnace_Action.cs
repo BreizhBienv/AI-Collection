@@ -46,4 +46,8 @@ public class MoveToFurnace_Action : BaseAction
     {
         pAgent._perceivedWorldState[EWorldState.NEAR_FURNACE] = true;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }

@@ -59,4 +59,8 @@ public class RetrieveIngot_Action : BaseAction
         pAgent.UnequipPickaxe();
         pAgent._perceivedWorldState[EWorldState.HAS_ORES] = true;
     }
+
+    public override void AbortAction(MinerAgent pAgent)
+    {
+    }
 }
