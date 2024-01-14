@@ -11,7 +11,10 @@ public class FurnaceToRetrieve_Action : MoveToFurnace_Action
 
     public override void Execute(MinerAgent pAgent)
     {
-        Furnace furnace = pAgent._target?.GetComponent<Furnace>();
+        Furnace furnace = null;
+        if (pAgent._target != null)
+            furnace = pAgent._target.GetComponent<Furnace>();
+
         if (furnace != null && furnace.CanPickUp())
             return;
 

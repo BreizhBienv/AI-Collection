@@ -130,6 +130,8 @@ public class MinerAgent : MonoBehaviour
 
     private IEnumerator Sleep()
     {
+        _navMeshAgent.isStopped = true;
+
         while (true)
         {
             yield return 0;
@@ -141,6 +143,7 @@ public class MinerAgent : MonoBehaviour
             if (!ingotAvailable || (!furnaceAvailable && !chunkAvailable))
                 continue;
 
+            _navMeshAgent.isStopped = false;
             StartCoroutine(BuildGraph());
             yield break;
         }
