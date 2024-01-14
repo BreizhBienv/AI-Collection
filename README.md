@@ -14,7 +14,7 @@ In our case, we have:
 
 World State  | Perceived World State
 ------------- | -------------
- Available_OreChunk</br>Availabe_Furnace</br>Available_Ingot</br>Available_Pickaxe | Near_Pickaxe</br>Near_OreChunk</br>Near_Furnace</br>Near_Chest</br>Has_PickaxeHas_Ore</br>Has_Ingot</br>Processed_Ore</br>Stored_Ingot
+ Available_OreChunk</br>Availabe_Furnace</br>Available_Ingot</br>Available_Pickaxe | Near_Pickaxe</br>Near_OreChunk</br>Near_Furnace</br>Near_Chest</br>Has_Pickaxe</br>Has_Ore</br>Has_Ingot</br>Processed_Ore</br>Stored_Ingot
 
  Finally, a world state can also be the goal of the plan of the AI, here, it would be `Processed_Ore` and `Stored_Ingot`.
 
