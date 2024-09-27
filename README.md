@@ -2,14 +2,15 @@
 
 A collection of different type of AI.
 
-### GOAP
+### [GOAP](GOAP/)
+
 - AI planner
 - Made on Unity
 - Third year At Isart Digital
 
 AI have to mine ore and process it.
 
-### Machine learning
+### [Machine learning](MachineLearning/)
 - Made on Unity
 - Third year At Isart Digital
 
