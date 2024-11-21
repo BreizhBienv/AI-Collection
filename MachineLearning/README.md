@@ -8,7 +8,7 @@ The exercise present itself in two step: <br>
 This project was done on Unity.
 <br>
 
-Youtube link: https://www.youtube.com/watch?v=KEGq7vo6qQA
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/KEGq7vo6qQA/0.jpg)](https://www.youtube.com/watch?v=KEGq7vo6qQA)
 
 ### XOR Training
 ***
