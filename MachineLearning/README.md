@@ -8,10 +8,11 @@ The exercise present itself in two step: <br>
 This project was done on Unity.
 <br>
 
+## Youtube Overview
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/KEGq7vo6qQA/0.jpg)](https://www.youtube.com/watch?v=KEGq7vo6qQA)
 
-### XOR Training
-***
+## XOR Training
 I had a program that could display a result depending of imputs, the goal was to use a genetic algorithm to train the AI to display the closest value possible to a list of targets we gave it. <br>
 To check which AI was the closest to the set of targets, I calculated the average of all the distances between the gene and the target it is assaciated with.<br>
      
@@ -31,9 +32,8 @@ To check which AI was the closest to the set of targets, I calculated the averag
 ![XOR](ReadMeAssets/XOR.PNG)<br><br><br>
 
 
-### Flappy Bird
-***
-#### How the AI works
+## Flappy Bird
+### How the AI works
 Now that I discovered a little bit of what genetic algo could do, it was time to try implementing it in a game. And the game I chose was Flappy Bird.<br>
 I based my AI on the NEAT algorithm, wich means I multiply inputs by weights and add them into a sum before passing it into an activation function.<br>
 To know wich AI was better, I used, as fitness, how long the AI has survived.<br>
