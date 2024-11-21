@@ -1,5 +1,8 @@
 # AI-Planning
 
+## Youtube Overview
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/OdDNakJP34w/0.jpg)](https://www.youtube.com/watch?v=OdDNakJP34w)
+
 ## Descrition
 An exercise done in my 3rd year at Isart Digital in January 2024. The purpose of the exercise was to discover and implement the AI planning algorithm. The project was made alone and using Unity.
 
